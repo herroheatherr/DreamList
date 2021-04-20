@@ -3,6 +3,7 @@ import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
 import * as am4plugins_forceDirected from '@amcharts/amcharts4/plugins/forceDirected';
 import am4themes_animated from '@amcharts/amcharts4/themes/animated';
+import { useHistory } from 'react-router';
 
 am4core.useTheme(am4themes_animated);
 
@@ -16,128 +17,184 @@ class JobsDataVis extends Component {
       new am4plugins_forceDirected.ForceDirectedSeries()
     );
 
-    this.props.jobsData.find((job) =>
-      job.job_category.includes('Administration & Human Resources')
-    ).job_category = 'Administration & Human Resources';
+    this.props.jobsData.forEach((job) => {
+      if (
+        job.job_category &&
+        job.job_category.includes('Administration & Human Resources')
+      ) {
+        job.job_category = 'Administration & Human Resources';
+      } else if (
+        job.job_category &&
+        job.job_category.includes('Constituent Services & Community Programs')
+      ) {
+        job.job_category = 'Constituent Services & Community Programs';
+      } else if (
+        job.job_category &&
+        job.job_category.includes('Engineering, Architecture, & Planning')
+      ) {
+        job.job_category = 'Engineering, Architecture, & Planning';
+      } else if (
+        job.job_category &&
+        job.job_category.includes('Communications & Intergovernmental Affairs')
+      ) {
+        job.job_category = 'Communications & Intergovernmental Affairs';
+      } else if (
+        job.job_category &&
+        job.job_category.includes('Finance, Accounting, & Procurement')
+      ) {
+        job.job_category = 'Finance, Accounting, & Procurement';
+      } else if (job.job_category && job.job_category.includes('Health')) {
+        job.job_category = 'Health';
+      } else if (
+        job.job_category &&
+        job.job_category.includes('Technology, Data & Innovation')
+      ) {
+        job.job_category = 'Technology, Data & Innovation';
+      } else if (
+        job.job_category &&
+        job.job_category.includes('Information Technology & Telecommunications')
+      ) {
+        job.job_category = 'Information Technology & Telecommunications';
+      } else if (
+        job.job_category &&
+        job.job_category.includes('Clerical & Administrative Support')
+      ) {
+        job.job_category = 'Clerical & Administrative Support';
+      } else if (job.job_category && job.job_category.includes('Legal')) {
+        job.job_category = 'Legal';
+      } else if (
+        job.job_category &&
+        job.job_category.includes('Building Operations & Maintenance')
+      ) {
+        job.job_category = 'Building Operations & Maintenance';
+      } else if (
+        job.job_category &&
+        job.job_category.includes('Policy, Research & Analysis')
+      ) {
+        job.job_category = 'Policy, Research & Analysis';
+      } else if (
+        job.job_category &&
+        job.job_category.includes('Public Safety, Inspections, & Enforcement')
+      ) {
+        job.job_category = 'Public Safety, Inspections, & Enforcement';
+      } else {
+        job.job_category = job.job_category;
+      }
+    });
 
-    this.props.jobsData.find((job) =>
-      job.job_category.includes('Constituent Services & Community Programs')
-    ).job_category = 'Constituent Services & Community Programs';
-
-    this.props.jobsData.find((job) =>
-      job.job_category.includes('Engineering, Architecture, & Planning')
-    ).job_category = 'Engineering, Architecture, & Planning';
-
-    this.props.jobsData.find((job) =>
-      job.job_category.includes('Communications & Intergovernmental Affairs')
-    ).job_category = 'Communications & Intergovernmental Affairs';
-
-    this.props.jobsData.find((job) =>
-      job.job_category.includes('Finance, Accounting, & Procurement')
-    ).job_category = 'Finance, Accounting, & Procurement';
-
-    this.props.jobsData.find((job) =>
-      job.job_category.includes('Health')
-    ).job_category = 'Health';
-
-    this.props.jobsData.find((job) =>
-      job.job_category.includes('Technology, Data & Innovation')
-    ).job_category = 'Technology, Data & Innovation';
-
-    this.props.jobsData.find((job) =>
-      job.job_category.includes('Information Technology & Telecommunications')
-    ).job_category = 'Information Technology & Telecommunications';
-
-    this.props.jobsData.find((job) =>
-      job.job_category.includes('Clerical & Administrative Support')
-    ).job_category = 'Clerical & Administrative Support';
-
-    this.props.jobsData.find((job) =>
-      job.job_category.includes('Legal')
-    ).job_category = 'Legal';
-
-    this.props.jobsData.find((job) =>
-      job.job_category.includes('Building Operations & Maintenance')
-    ).job_category = 'Building Operations & Maintenance';
-
-    this.props.jobsData.find((job) =>
-      job.job_category.includes('Policy, Research & Analysis')
-    ).job_category = 'Policy, Research & Analysis';
-
-    this.props.jobsData.find((job) =>
-      job.job_category.includes('Public Safety, Inspections, & Enforcement')
-    ).job_category = 'Public Safety, Inspections, & Enforcement';
-
-    console.log('updated jobsData', this.props.jobsData);
-
-    chart.data = [
-      {
-        name: this.props.jobsData[0]['job_category'],
-        children: [
-          {
-            name: 'First',
-            children: [
-              { name: 'A1', value: 100 },
-              { name: 'A2', value: 60 },
-            ],
-          },
-          {
-            name: 'Second',
-            children: [
-              { name: 'B1', value: 135 },
-              { name: 'B2', value: 98 },
-            ],
-          },
-          {
-            name: 'Third',
-            children: [
-              {
-                name: 'C1',
-                children: [
-                  { name: 'EE1', value: 130 },
-                  { name: 'EE2', value: 87 },
-                  { name: 'EE3', value: 55 },
-                ],
-              },
-              { name: 'C2', value: 148 },
-              {
-                name: 'C3',
-                children: [
-                  { name: 'CC1', value: 53 },
-                  { name: 'CC2', value: 30 },
-                ],
-              },
-              { name: 'C4', value: 26 },
-            ],
-          },
-          {
-            name: 'Fourth',
-            children: [
-              { name: 'D1', value: 415 },
-              { name: 'D2', value: 148 },
-              { name: 'D3', value: 89 },
-            ],
-          },
-          {
-            name: 'Fifth',
-            children: [
-              {
-                name: 'E1',
-                children: [
-                  { name: 'EE1', value: 33 },
-                  { name: 'EE2', value: 40 },
-                  { name: 'EE3', value: 89 },
-                ],
-              },
-              {
-                name: 'E2',
-                value: 148,
-              },
-            ],
-          },
-        ],
-      },
+    const unique = [
+      ...new Map(
+        this.props.jobsData.map((obj) => [obj['job_category'], obj])
+      ).values(),
     ];
+
+    const uniqueAgency = [
+      ...new Map(
+        this.props.jobsData.map((obj) => [obj['agency'], obj])
+      ).values(),
+    ];
+
+    const jobCategoryArr = unique.reduce((accum, currentObj) => {
+      return [...accum, currentObj['job_category']];
+    }, []);
+
+    const testArr = [];
+
+    jobCategoryArr.forEach((element) => {
+      testArr.push({ name: element });
+    });
+
+    let result = [],
+      index = [];
+
+    for (let i in this.props.jobsData) {
+      let category = this.props.jobsData[i].job_category,
+        j = index.indexOf(category);
+      if (j === -1) {
+        result.push({
+          name: category,
+          children: [],
+        });
+        index.push(category);
+        j = index.length - 1;
+      }
+
+      result[j].children.push({ name: this.props.jobsData[i].agency });
+    }
+
+    chart.data = result;
+    console.log('testArr', testArr);
+    console.log('jobsData', this.props.jobsData);
+    console.log('result', result);
+    // console.log('unique', unique);
+    // chart.data = [
+    //   {
+    //     name: this.props.jobsData[0]['job_category'],
+    //     children: [
+    //       {
+    //         name: 'First',
+    //         children: [
+    //           { name: 'A1', value: 100 },
+    //           { name: 'A2', value: 60 },
+    //         ],
+    //       },
+    //       {
+    //         name: 'Second',
+    //         children: [
+    //           { name: 'B1', value: 135 },
+    //           { name: 'B2', value: 98 },
+    //         ],
+    //       },
+    //       {
+    //         name: 'Third',
+    //         children: [
+    //           {
+    //             name: 'C1',
+    //             children: [
+    //               { name: 'EE1', value: 130 },
+    //               { name: 'EE2', value: 87 },
+    //               { name: 'EE3', value: 55 },
+    //             ],
+    //           },
+    //           { name: 'C2', value: 148 },
+    //           {
+    //             name: 'C3',
+    //             children: [
+    //               { name: 'CC1', value: 53 },
+    //               { name: 'CC2', value: 30 },
+    //             ],
+    //           },
+    //           { name: 'C4', value: 26 },
+    //         ],
+    //       },
+    //       {
+    //         name: 'Fourth',
+    //         children: [
+    //           { name: 'D1', value: 415 },
+    //           { name: 'D2', value: 148 },
+    //           { name: 'D3', value: 89 },
+    //         ],
+    //       },
+    //       {
+    //         name: 'Fifth',
+    //         children: [
+    //           {
+    //             name: 'E1',
+    //             children: [
+    //               { name: 'EE1', value: 33 },
+    //               { name: 'EE2', value: 40 },
+    //               { name: 'EE3', value: 89 },
+    //             ],
+    //           },
+    //           {
+    //             name: 'E2',
+    //             value: 148,
+    //           },
+    //         ],
+    //       },
+    //     ],
+    //   },
+    // ];
 
     networkSeries.dataFields.value = 'value';
     networkSeries.dataFields.name = 'name';
