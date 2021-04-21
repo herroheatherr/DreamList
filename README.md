@@ -7,4 +7,11 @@ Tech stack:
 - Hosted on Heroku at
 
 Different views of data visualization:
-![plot] (/Users/heatherha/myconnections/public/HighLevel.png)
+-High level view:
+![](/public/HighLevel.png)
+
+-Second level view:
+![](/public/SecondLevel.png)
+
+-Detailed level view:
+![](/public/DetailedLevel.png)
