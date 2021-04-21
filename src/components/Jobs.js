@@ -24,10 +24,6 @@ const Jobs = () => {
 
   return (
     <div>
-      <h5 className="center">
-        Explore current job postings available on the City of New York's
-        official jobs site.
-      </h5>
       <div className="container">
         {loading ? <Loading /> : <JobsDataVis jobsData={jobs} />}
       </div>

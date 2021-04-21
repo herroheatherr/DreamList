@@ -3,10 +3,11 @@ import React from 'react';
 const Loading = () => {
   return (
     <div className="loading-screen">
-      <img
-        src="https://media.giphy.com/media/kUTME7ABmhYg5J3psM/giphy.gif"
-        alt="loading"
-      />
+      <span id="loading-text">
+        Explore current job postings available on the City of New York's
+        official jobs site.
+      </span>
+      <img src="/loading.gif" alt="loading" />
     </div>
   );
 };
