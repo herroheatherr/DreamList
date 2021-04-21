@@ -82,47 +82,100 @@ class JobsDataVis extends Component {
       }
     });
 
-    let result = [],
-      index = [];
+    // let result = [],
+    //   index = [];
 
-    for (let i in this.props.jobsData) {
-      let category = this.props.jobsData[i].job_category,
-        j = index.indexOf(category);
-      if (j === -1) {
-        result.push({
-          name: category,
-          children: [],
-        });
-        index.push(category);
-        j = index.length - 1;
+    // for (let i in this.props.jobsData) {
+    //   let category = this.props.jobsData[i].job_category,
+    //     j = index.indexOf(category);
+    //   if (j === -1) {
+    //     result.push({
+    //       name: category,
+    //       children: [],
+    //     });
+    //     index.push(category);
+    //     j = index.length - 1;
+    //   }
+    //   result[j].children.push({
+    //     name: this.props.jobsData[i].agency,
+    //   });
+    // }
+
+    function nestGroupsBy(arr, properties) {
+      properties = Array.from(properties);
+      if (properties.length === 1) {
+        return groupBy(arr, properties[0]);
       }
-      result[j].children.push({
-        name: this.props.jobsData[i].agency,
-        value: 1,
+      const property = properties.shift();
+      var grouped = groupBy(arr, property);
+      for (let key in grouped) {
+        grouped[key] = nestGroupsBy(grouped[key], Array.from(properties));
+      }
+      return grouped;
+    }
+
+    function groupBy(conversions, property) {
+      return conversions.reduce((acc, obj) => {
+        let key = obj[property];
+        if (!acc[key]) {
+          acc[key] = [];
+        }
+        acc[key].push(obj);
+        return acc;
+      }, {});
+    }
+
+    const result = nestGroupsBy(this.props.jobsData, [
+      'job_category',
+      'agency',
+      'civil_service_title',
+    ]);
+
+    const formatData = (obj) => {
+      let arr = [];
+      let entries = Object.entries(obj);
+
+      for (let j = 0; j < entries.length; j++) {
+        let element = entries[j];
+        if (Array.isArray(element)) {
+          let nestedEntries = Object.entries(element[1]);
+          element[1] = nestedEntries;
+        }
+      }
+
+      for (let i = 0; i < entries.length; i++) {
+        let obj = {};
+        obj.name = entries[i][0];
+        obj.children = entries[i][1];
+        arr.push(obj);
+      }
+
+      let nestedChildren1 = arr.map((obj) => {
+        return obj.children.map((x) => {
+          return {
+            name: x[0],
+            children: Object.entries(x[1]).map((k) => {
+              return {
+                name: k[0],
+                children: k[1],
+              };
+            }),
+          };
+        });
       });
-    }
 
-    let arrOfChildren = [];
-    for (let i = 0; i < result.length; i++) {
-      arrOfChildren.push(result[i].children);
-    }
-
-    let uniqueAgency = [];
-    arrOfChildren.forEach((curr) => {
-      uniqueAgency.push([
-        ...new Map(curr.map((obj) => [obj['name'], obj])).values(),
-      ]);
-    });
-
-    result.forEach((curr, idx) => {
-      curr.children = uniqueAgency[idx];
-    });
+      for (let k = 0; k < arr.length; k++) {
+        arr[k].children = nestedChildren1[k];
+      }
+      //   console.log('arr', arr);
+      return arr;
+    };
 
     // console.log('result', result);
-    // console.log('arrOfChildren', arrOfChildren);
-    // console.log('uniqueAgency', uniqueAgency);
+    let finalData = formatData(result);
+    console.log('finalData', finalData);
 
-    chart.data = result;
+    chart.data = finalData;
     networkSeries.dataFields.value = 'value';
     networkSeries.dataFields.name = 'name';
     networkSeries.dataFields.children = 'children';
@@ -130,7 +183,7 @@ class JobsDataVis extends Component {
     networkSeries.nodes.template.fillOpacity = 1;
 
     networkSeries.nodes.template.label.text = '{name}';
-    networkSeries.fontSize = 10;
+    networkSeries.fontSize = 8;
 
     networkSeries.links.template.strokeWidth = 1;
 
@@ -236,3 +289,19 @@ class JobsDataVis extends Component {
 }
 
 export default JobsDataVis;
+
+// let arrOfChildren = [];
+// for (let i = 0; i < result.length; i++) {
+//   arrOfChildren.push(result[i].children);
+// }
+
+// let uniqueAgency = [];
+// arrOfChildren.forEach((curr) => {
+//   uniqueAgency.push([
+//     ...new Map(curr.map((obj) => [obj['name'], obj])).values(),
+//   ]);
+// });
+
+// result.forEach((curr, idx) => {
+//   curr.children = uniqueAgency[idx];
+// });

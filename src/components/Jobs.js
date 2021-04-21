@@ -26,7 +26,6 @@ const Jobs = () => {
         Explore current job postings available on the City of New York's
         official jobs site.
       </h5>
-      <p className="center">Placeholder</p>
       <div className="container">
         <JobsDataVis jobsData={jobs} />
       </div>
