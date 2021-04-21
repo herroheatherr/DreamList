@@ -3,16 +3,30 @@ import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
 import * as am4plugins_forceDirected from '@amcharts/amcharts4/plugins/forceDirected';
 import am4themes_animated from '@amcharts/amcharts4/themes/animated';
-import { useHistory } from 'react-router';
+import Loading from './Loading';
 
 am4core.useTheme(am4themes_animated);
 
 class JobsDataVis extends Component {
+  constructor() {
+    super();
+    this.state = {
+      isLoading: true,
+    };
+  }
+
+  componentDidMount() {
+    this.setState({ isLoading: false });
+  }
+
   componentDidUpdate() {
     var chart = am4core.create(
       'chartdiv',
       am4plugins_forceDirected.ForceDirectedTree
     );
+    chart.legend = new am4charts.Legend();
+
+    chart.zoomable = true;
     var networkSeries = chart.series.push(
       new am4plugins_forceDirected.ForceDirectedSeries()
     );
@@ -82,25 +96,6 @@ class JobsDataVis extends Component {
       }
     });
 
-    // let result = [],
-    //   index = [];
-
-    // for (let i in this.props.jobsData) {
-    //   let category = this.props.jobsData[i].job_category,
-    //     j = index.indexOf(category);
-    //   if (j === -1) {
-    //     result.push({
-    //       name: category,
-    //       children: [],
-    //     });
-    //     index.push(category);
-    //     j = index.length - 1;
-    //   }
-    //   result[j].children.push({
-    //     name: this.props.jobsData[i].agency,
-    //   });
-    // }
-
     function nestGroupsBy(arr, properties) {
       properties = Array.from(properties);
       if (properties.length === 1) {
@@ -158,6 +153,7 @@ class JobsDataVis extends Component {
               return {
                 name: k[0],
                 children: k[1],
+                value: k[1].length,
               };
             }),
           };
@@ -167,15 +163,13 @@ class JobsDataVis extends Component {
       for (let k = 0; k < arr.length; k++) {
         arr[k].children = nestedChildren1[k];
       }
-      //   console.log('arr', arr);
       return arr;
     };
 
-    // console.log('result', result);
     let finalData = formatData(result);
-    console.log('finalData', finalData);
 
     chart.data = finalData;
+
     networkSeries.dataFields.value = 'value';
     networkSeries.dataFields.name = 'name';
     networkSeries.dataFields.children = 'children';
@@ -184,6 +178,8 @@ class JobsDataVis extends Component {
 
     networkSeries.nodes.template.label.text = '{name}';
     networkSeries.fontSize = 8;
+    networkSeries.nodes.template.label.truncate = true;
+    networkSeries.nodes.template.label.hideOversized = true;
 
     networkSeries.links.template.strokeWidth = 1;
 
@@ -208,6 +204,8 @@ class JobsDataVis extends Component {
         event.target.dataItem.parentLink.isHover = false;
       }
     });
+    networkSeries.maxLevels = 2;
+
     this.chart = chart;
 
     //Responsiveness
@@ -284,24 +282,8 @@ class JobsDataVis extends Component {
   }
 
   render() {
-    return <div id="chartdiv"></div>;
+    return this.state.isLoading ? <Loading /> : <div id="chartdiv"></div>;
   }
 }
 
 export default JobsDataVis;
-
-// let arrOfChildren = [];
-// for (let i = 0; i < result.length; i++) {
-//   arrOfChildren.push(result[i].children);
-// }
-
-// let uniqueAgency = [];
-// arrOfChildren.forEach((curr) => {
-//   uniqueAgency.push([
-//     ...new Map(curr.map((obj) => [obj['name'], obj])).values(),
-//   ]);
-// });
-
-// result.forEach((curr, idx) => {
-//   curr.children = uniqueAgency[idx];
-// });
