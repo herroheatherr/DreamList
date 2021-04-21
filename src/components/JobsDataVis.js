@@ -82,28 +82,6 @@ class JobsDataVis extends Component {
       }
     });
 
-    const unique = [
-      ...new Map(
-        this.props.jobsData.map((obj) => [obj['job_category'], obj])
-      ).values(),
-    ];
-
-    const uniqueAgency = [
-      ...new Map(
-        this.props.jobsData.map((obj) => [obj['agency'], obj])
-      ).values(),
-    ];
-
-    const jobCategoryArr = unique.reduce((accum, currentObj) => {
-      return [...accum, currentObj['job_category']];
-    }, []);
-
-    const testArr = [];
-
-    jobCategoryArr.forEach((element) => {
-      testArr.push({ name: element });
-    });
-
     let result = [],
       index = [];
 
@@ -118,84 +96,33 @@ class JobsDataVis extends Component {
         index.push(category);
         j = index.length - 1;
       }
-
-      result[j].children.push({ name: this.props.jobsData[i].agency });
+      result[j].children.push({
+        name: this.props.jobsData[i].agency,
+        value: 1,
+      });
     }
 
-    chart.data = result;
-    console.log('testArr', testArr);
-    console.log('jobsData', this.props.jobsData);
-    console.log('result', result);
-    // console.log('unique', unique);
-    // chart.data = [
-    //   {
-    //     name: this.props.jobsData[0]['job_category'],
-    //     children: [
-    //       {
-    //         name: 'First',
-    //         children: [
-    //           { name: 'A1', value: 100 },
-    //           { name: 'A2', value: 60 },
-    //         ],
-    //       },
-    //       {
-    //         name: 'Second',
-    //         children: [
-    //           { name: 'B1', value: 135 },
-    //           { name: 'B2', value: 98 },
-    //         ],
-    //       },
-    //       {
-    //         name: 'Third',
-    //         children: [
-    //           {
-    //             name: 'C1',
-    //             children: [
-    //               { name: 'EE1', value: 130 },
-    //               { name: 'EE2', value: 87 },
-    //               { name: 'EE3', value: 55 },
-    //             ],
-    //           },
-    //           { name: 'C2', value: 148 },
-    //           {
-    //             name: 'C3',
-    //             children: [
-    //               { name: 'CC1', value: 53 },
-    //               { name: 'CC2', value: 30 },
-    //             ],
-    //           },
-    //           { name: 'C4', value: 26 },
-    //         ],
-    //       },
-    //       {
-    //         name: 'Fourth',
-    //         children: [
-    //           { name: 'D1', value: 415 },
-    //           { name: 'D2', value: 148 },
-    //           { name: 'D3', value: 89 },
-    //         ],
-    //       },
-    //       {
-    //         name: 'Fifth',
-    //         children: [
-    //           {
-    //             name: 'E1',
-    //             children: [
-    //               { name: 'EE1', value: 33 },
-    //               { name: 'EE2', value: 40 },
-    //               { name: 'EE3', value: 89 },
-    //             ],
-    //           },
-    //           {
-    //             name: 'E2',
-    //             value: 148,
-    //           },
-    //         ],
-    //       },
-    //     ],
-    //   },
-    // ];
+    let arrOfChildren = [];
+    for (let i = 0; i < result.length; i++) {
+      arrOfChildren.push(result[i].children);
+    }
 
+    let uniqueAgency = [];
+    arrOfChildren.forEach((curr) => {
+      uniqueAgency.push([
+        ...new Map(curr.map((obj) => [obj['name'], obj])).values(),
+      ]);
+    });
+
+    result.forEach((curr, idx) => {
+      curr.children = uniqueAgency[idx];
+    });
+
+    // console.log('result', result);
+    // console.log('arrOfChildren', arrOfChildren);
+    // console.log('uniqueAgency', uniqueAgency);
+
+    chart.data = result;
     networkSeries.dataFields.value = 'value';
     networkSeries.dataFields.name = 'name';
     networkSeries.dataFields.children = 'children';
