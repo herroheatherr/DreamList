@@ -7,6 +7,7 @@ Tech stack:
 - Hosted on Heroku at https://nyc-job-datavis.herokuapp.com/
 
 Different views of data visualization:
+
 -High level view:
 ![](/public/HighLevel.png)
 
